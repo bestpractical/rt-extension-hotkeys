@@ -33,7 +33,7 @@ sub ConfAsJS {
     my $conf = shift;
     return {} unless $conf && keys %$conf;
 
-    my $str  = '{';
+    my $str = '{';
     for my $key ( keys %$conf ) {
         $key =~ s!'!\\'!g;
         if ( ref $conf->{$key} ) {
@@ -59,21 +59,31 @@ sub Help {
 
     my $str;
 
-    for my $key ( sort keys %$conf ) {
-        if ( ref $conf->{$key} ) {
-            if ( !ref $conf->{$key} || exists $conf->{$key}{body} ) {
-                my $doc = $conf->{$key}{doc} || $conf->{$key}{body};
-                $str .= '    ' x $level . "$key -> $doc\\n";
+    if ( $level == 0 ) {
+        for my $item ( sort { $a eq 'global' ? -1 : $a <=> $b }keys %$conf ) {
+            $str .= "===== $item =====\\n\\n";
+            $str .= Help( $conf->{$item}, $level + 1 );
+            $str .= "\\n";
+        }
+    }
+    else {
+
+        for my $key ( sort keys %$conf ) {
+            if ( ref $conf->{$key} ) {
+                if ( !ref $conf->{$key} || exists $conf->{$key}{body} ) {
+                    my $doc = $conf->{$key}{doc} || $conf->{$key}{body};
+                    $str .= '  ' x ($level-1) . "$key -> $doc\\n";
+                }
+                else {
+                    $str .=
+                        '  ' x ($level-1)
+                      . "$key ->\\n"
+                      . Help( $conf->{$key}, $level + 1 );
+                }
             }
             else {
-                $str .=
-                    '    ' x $level
-                  . "$key ->\\n"
-                  . Help( $conf->{$key}, $level + 1 );
+                $str .= '    ' x ($level-1) . "$key -> $conf->{$key}\\n";
             }
-        }
-        else {
-            $str .= '    ' x $level . "$key -> $conf->{$key}\\n";
         }
     }
     return $str;
@@ -110,48 +120,91 @@ customize %Hotkeys to meet your needs:
     Set(
         %Hotkeys,
         (
-            'v'       => { body => q!hotkeys.version()!, doc => 'version', },
-            'shift+/' => { body => q!hotkeys.help()!,    doc => 'help', },
-            't'       => { body => q!hotkeys.ticket()!,  doc => 'goto ticket' },
-            'b'       => {
-                body =>
-                  q!hotkeys.click('a[href*="/Helpers/Toggle/TicketBookmark"]')!,
-                doc => 'toggle bookmark',
+            global => {
+                'v' => { body => q!hotkeys.version()!, doc => 'version', },
+                'shift+/' => { body => q!hotkeys.help()!, doc => 'help', },
+                't' => { body => q!hotkeys.ticket()!, doc => 'goto ticket' },
+                'g' => {
+                    'a' => {
+                        body => q!hotkeys.openLink("/Approvals")!,
+                        doc  => 'approvals',
+                    },
+                    'c' => {
+                        'c' => {
+                            body => q!hotkeys.openLink("/Admin/")!,
+                            doc  => 'admin',
+                        },
+                        'g' => {
+                            body => q!hotkeys.openLink("/Admin/Global.html")!,
+                            doc  => 'admin global',
+                        },
+                    },
+                    'h' => { body => q!hotkeys.openLink("/")!, doc => 'home', },
+                    'l' => {
+                        body => q!hotkeys.openLink("/NoAuth/Logout.html")!,
+                        doc  => 'logout',
+                    },
+                    'p' => {
+                        'h' => {
+                            body => q!hotkeys.openLink("/Prefs/Hotkeys.html")!,
+                            doc  => 'customize hotkeys',
+                        },
+                        'p' => {
+                            body => q!hotkeys.openLink("/Prefs/Other.html")!,
+                            doc  => 'customize options',
+                        },
+                    },
+                    's' => {
+                        body => q!hotkeys.openLink('/Search/Build.html')!,
+                        doc  => 'search builder',
+                    },
+                    't' => {
+                        'd' => {
+                            body => q!hotkeys.openLink("/Tools/MyDay.html")!,
+                            doc  => 'my day',
+                        },
+                        'o' => {
+                            body => q!hotkeys.openLink("/Tools/Offline.html")!,
+                            doc  => 'offline',
+                        },
+                        'm' => {
+                            body => q!hotkeys.openLink("/Tools/MyReminders")!,
+                            doc  => 'my reminders',
+                        },
+                        't' => {
+                            body => q!hotkeys.openLink("/Tools")!,
+                            doc  => 'tools',
+                        },
+                    },
+                },
+                'n' => {
+                    body => q!hotkeys.submit('#CreateTicketInQueue')!,
+                    doc  => 'create ticket in default queue',
+                },
+
             },
-            'c' => {
-                body => q!hotkeys.open('a[href*="Action=Comment"]')!,
-                doc  => 'comment',
-            },
-            'shift+c' => {
-                body => q!hotkeys.open('a[href*="Action=Comment"]:last')!,
-                doc  => 'comment',
-            },
-            'r' => {
-                body => q!hotkeys.open('a[href*="Action=Respond"]')!,
-                doc  => 'reply',
-            },
-            'shift+r' => {
-                body => q!hotkeys.open('a[href*="Action=Respond"]:last')!,
-                doc  => 'reply',
-            },
-            'g' => {
-                'a' =>
-                  { body => q!hotkeys.openLink("/Admin")!, doc => 'admin', },
+            '/Ticket/' => {
+                'b' => {
+                    body =>
+q!hotkeys.click('a[href*="/Helpers/Toggle/TicketBookmark"]')!,
+                    doc => 'toggle bookmark',
+                },
                 'c' => {
-                    body => q!hotkeys.openLink("/Prefs/Hotkeys.html")!,
-                    doc  => 'customize hotkeys',
+                    body => q!hotkeys.open('a[href*="Action=Comment"]')!,
+                    doc  => 'comment',
                 },
-                'h' => { body => q!hotkeys.openLink("/")!, doc => 'home', },
-                's' => {
-                    body => q!hotkeys.openLink('/Search/Build.html')!,
-                    doc  => 'search builder',
+                'shift+c' => {
+                    body => q!hotkeys.open('a[href*="Action=Comment"]:last')!,
+                    doc  => 'comment',
                 },
-                't' =>
-                  { body => q!hotkeys.openLink("/Tools")!, doc => 'tools', },
-            },
-            'n' => {
-                body => q!hotkeys.submit('#CreateTicketInQueue')!,
-                doc  => 'create ticket in default queue',
+                'r' => {
+                    body => q!hotkeys.open('a[href*="Action=Respond"]')!,
+                    doc  => 'reply',
+                },
+                'shift+r' => {
+                    body => q!hotkeys.open('a[href*="Action=Respond"]:last')!,
+                    doc  => 'reply',
+                },
             },
         )
     );

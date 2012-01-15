@@ -15,12 +15,21 @@ jQuery( function() {
 
 <%INIT>
 my $user = $session{CurrentUser}->UserObj;
-
 return if RT->Config->Get('DisableHotkeys', $user);
 
 my $conf = $user->Preferences('Hotkeys') || RT->Config->Get('Hotkeys') || {};
+my $path = $r->path_info;
 
-my $js_conf = RT::Extension::Hotkeys::ConfAsJS( $conf );
+my $flat_conf = {};
+for my $item ( keys %$conf ) {
+    if ( $item eq 'global' || $path =~ /^$item/ ) {
+        for my $key ( keys %{$conf->{$item}} ) {
+            $flat_conf->{$key} = $conf->{$item}{$key};
+        }
+    }
+}
+
+my $js_conf = RT::Extension::Hotkeys::ConfAsJS( $flat_conf );
 my $help = RT::Extension::Hotkeys::Help( $conf );
 $help =~ s!'!\\'!;
 </%INIT>
