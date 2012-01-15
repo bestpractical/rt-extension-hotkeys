@@ -15,6 +15,9 @@ jQuery( function() {
 
 <%INIT>
 my $user = $session{CurrentUser}->UserObj;
+
+return if RT->Config->Get('DisableHotkeys', $user);
+
 my $conf = $user->Preferences('Hotkeys') || RT->Config->Get('Hotkeys') || {};
 
 my $js_conf = RT::Extension::Hotkeys::ConfAsJS( $conf );

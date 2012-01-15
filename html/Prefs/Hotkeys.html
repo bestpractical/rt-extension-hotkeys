@@ -13,8 +13,16 @@
 <%INIT>
 my @results;
 my $title = loc('Customize') . ' ' . loc('Hotkeys');
-
 my $user = $session{'CurrentUser'}->UserObj;
+
+my $disabled = RT->Config->Get('DisableHotkeys', $user);
+if ( $disabled ) {
+    push @results,
+      loc(
+        'Hotkeys is currently disabled, you need to enable it to use this functionality.'
+      );
+}
+
 use JSON;
 my $pref;
 

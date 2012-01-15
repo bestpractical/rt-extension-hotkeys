@@ -17,6 +17,18 @@ RT->AddJavaScript(
 
 RT->AddStyleSheets('hotkeys.css');
 
+use RT::Config;
+
+$RT::Config::META{DisableHotkeys} = {
+    Section         => 'General',
+    Overridable     => 1,
+    SortOrder       => 10,
+    Widget          => '/Widgets/Form/Boolean',
+    WidgetArguments => {
+        Description => 'Disable hotkeys'    # loc
+    },
+};
+
 sub ConfAsJS {
     my $conf = shift;
     return {} unless $conf && keys %$conf;
@@ -91,6 +103,7 @@ To install this module, run the following commands:
 add RT::Extension::Hotkeys to @Plugins in RT's etc/RT_SiteConfig.pm:
 
     Set( @Plugins, qw(... RT::Extension::Hotkeys) );
+    Set( $DisableHotkeys, 1 ); # disable it by default
 
 customize %Hotkeys to meet your needs:
 
