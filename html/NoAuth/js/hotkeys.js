@@ -49,7 +49,7 @@
     }
 
     function ticket() {
-        var number = prompt("Open ticket:", "");
+        var number = prompt("<% loc('Goto Ticket') %>", "");
         if (number){
             window.location = '<% $web_path %>/Ticket/Display.html?id=' + number;
         }
