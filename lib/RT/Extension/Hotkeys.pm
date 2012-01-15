@@ -99,13 +99,12 @@ customize %Hotkeys to meet your needs:
         (
             'v'       => { body => q!version()!, doc => 'version', },
             'shift+/' => { body => q!help()!,    doc => 'help', },
-            'shift+/' => { body => q!help()!,    doc => 'help', },
-            'h'       => { body => q!open('/')!, doc => 'home', },
+            'h'       => { body => q!openLink('/')!, doc => 'home', },
             '/'       => {
-                body => q!open('/Search/Build.html')!,
+                body => q!openLink('/Search/Build.html')!,
                 doc  => 'search builder',
             },
-            't' => { body => q!ticket()!, doc => 'go to ticket' },
+            't' => { body => q!ticket()!, doc => 'goto ticket' },
             'b' => {
                 body =>
                   q!click('a[href*="/Helpers/Toggle/TicketBookmark"]:first')!,
@@ -120,12 +119,12 @@ customize %Hotkeys to meet your needs:
                 doc  => 'reply',
             },
             'g' => {
-                'a' => { body => q!open("/Admin")!, doc => 'admin', },
-                't' => { body => q!open("/Tools")!, doc => 'tools', },
+                'a' => { body => q!openLink("/Admin")!, doc => 'admin', },
+                't' => { body => q!openLink("/Tools")!, doc => 'tools', },
             },
             'n' => {
                 body => q!submit('#CreateTicketInQueue')!,
-                doc  => 'create ticket',
+                doc  => 'create ticket in default queue',
             },
         )
     );

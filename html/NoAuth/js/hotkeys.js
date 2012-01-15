@@ -19,8 +19,9 @@
     }
 
     function submit( e ) {
-        if ( jQuery(e).size() ) {
-            jQuery(e).submit();
+        var obj = jQuery(document).find(e).filter(':first');
+        if ( obj.size() ) {
+            obj.submit();
         }
         else {
             notFound( e );
@@ -28,19 +29,27 @@
     }
 
     function click( e ) {
-        if ( jQuery(e).size() ) {
-            jQuery(e).click();
+        var obj = jQuery(document).find(e).filter(':first');
+        if ( obj.size() ) {
+            obj.click();
         }
         else {
             notFound( e );
         }
     }
 
-    function open( e ) {
+    function openLink( e ) {
         if ( e.match(/^\//) ) {
             window.location = '<% $web_path %>' + e;
         }
-        else if ( jQuery(e).size() ) {
+        else {
+            window.location = e;
+        }
+    }
+
+    function open( e ) {
+        var obj = jQuery(document).find(e).filter(':first');
+        if ( obj.size() ) {
             window.location = jQuery(e).filter(':first').attr('href');
         }
         else {
