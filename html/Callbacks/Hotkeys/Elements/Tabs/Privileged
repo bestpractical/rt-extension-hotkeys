@@ -1,0 +1,11 @@
+<%INIT>
+
+if (   $session{'CurrentUser'}->UserObj
+    && $session{'CurrentUser'}->HasRight( Right => 'ModifySelf', Object => RT->System ) )
+{
+    my $settings = Menu->child('preferences')->child('settings')->child(
+        hotkeys => title => loc('Hotkeys'),
+        path    => '/Prefs/Hotkeys.html'
+    );
+}
+</%INIT>

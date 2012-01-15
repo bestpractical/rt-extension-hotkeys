@@ -2,3 +2,8 @@
     padding: 10px;
     background: #888;
 }
+
+textarea.hotkeys {
+    width: 90%;
+    height: 50ex;
+}

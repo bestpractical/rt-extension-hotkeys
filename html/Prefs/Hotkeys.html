@@ -1,0 +1,47 @@
+<& /Elements/Header, Title => $title &>
+<& /Elements/Tabs &>
+<& /Elements/ListActions, actions => \@results &>
+
+<form method="post" action="Hotkeys.html" name="ModifyHotkeys" id="ModifyHotkeys">
+<&|/Widgets/TitleBox, title => loc( 'Hotkeys' ) &>
+<textarea class="hotkeys" name="Hotkeys"><% $json %></textarea>
+</&>
+
+<& /Elements/Submit, Name => 'Reset', Label => loc('Reset') &>
+<& /Elements/Submit, Name => 'Save', Label => loc('Save Changes') &>
+</form>
+<%INIT>
+my @results;
+my $title = loc('Customize') . ' ' . loc('Hotkeys');
+
+my $user = $session{'CurrentUser'}->UserObj;
+use JSON;
+my $pref;
+
+if ( $Save ) {
+    eval { $pref = from_json($Hotkeys) };
+    if ( $@ ) {
+        my $err = $@;
+        $err =~ s!Stack:.*!!s;
+        $err =~ s!(.*) at .*!$1!s;
+        push @results, loc("Error") . ": $err";
+    }
+    else {
+        my ($ok, $msg) = $user->SetPreferences( 'Hotkeys', $pref );
+        push @results, $ok ? loc("Preferences saved.") : $msg;
+    }
+}
+elsif ( $Reset ) {
+    $pref = RT->Config->Get('Hotkeys') || {};
+    my ($ok, $msg) = $user->SetPreferences( 'Hotkeys', $pref );
+    push @results, $ok ? loc("Preferences saved.") : $msg;
+}
+
+$pref ||= $user->Preferences( 'Hotkeys' ) || {};
+my $json = to_json($pref, { pretty => 1 });
+</%INIT>
+<%ARGS>
+$Save => 0
+$Reset => 0
+$Hotkeys => ''
+</%ARGS>
