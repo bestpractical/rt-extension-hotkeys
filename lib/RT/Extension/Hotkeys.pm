@@ -24,11 +24,16 @@ sub Convert {
     my $str  = '{';
     for my $key ( keys %$conf ) {
         $key =~ s!'!\\'!g;
-        if ( exists $conf->{$key}{body} ) {
-            $str .= "'$key': function() { $conf->{$key}{body} },\n";
+        if ( ref $conf->{$key} ) {
+            if ( exists $conf->{$key}{body} ) {
+                $str .= "'$key': function() { $conf->{$key}{body} },\n";
+            }
+            else {
+                $str .= "'$key': " . Convert( $conf->{$key} ) . ",\n";
+            }
         }
         else {
-            $str .= "'$key': " . Convert( $conf->{$key} ) . ",\n";
+            $str .= "'$key': function() { $conf->{$key} },\n";
         }
     }
     $str =~ s!,\n$!\}!;    # \} is to make vim happy
@@ -43,12 +48,20 @@ sub Help {
     my $str;
 
     for my $key ( sort keys %$conf ) {
-        if ( exists $conf->{$key}{body} ) {
-            no warnings 'uninitialized';
-            $str .= '    ' x $level . "$key -> $conf->{$key}{doc}\\n";
+        if ( ref $conf->{$key} ) {
+            if ( !ref $conf->{$key} || exists $conf->{$key}{body} ) {
+                my $doc = $conf->{$key}{doc} || $conf->{$key}{body};
+                $str .= '    ' x $level . "$key -> $doc\\n";
+            }
+            else {
+                $str .=
+                    '    ' x $level
+                  . "$key ->\\n"
+                  . Help( $conf->{$key}, $level + 1 );
+            }
         }
         else {
-            $str .= '    ' x $level . "$key ->\\n" .  Help( $conf->{$key}, $level+1 );
+            $str .= '    ' x $level . "$key -> $conf->{$key}\\n";
         }
     }
     return $str;
@@ -85,6 +98,7 @@ customize %Hotkeys to meet your needs:
         %Hotkeys,
         (
             'v'       => { body => q!version()!, doc => 'version', },
+            'shift+/' => { body => q!help()!,    doc => 'help', },
             'shift+/' => { body => q!help()!,    doc => 'help', },
             'h'       => { body => q!open('/')!, doc => 'home', },
             '/'       => {
