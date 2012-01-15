@@ -1,74 +1,52 @@
-(function(jQuery){
-    function help () {
-        var string =
-            'RT::Extension::Hotkeys version <% $RT::Extension::Hotkeys::VERSION %>\n\n' +
-            '<% $help |n%>';
+hotkeys = {
+    show: function( string ) {
         jQuery('<pre>' + string + '</pre>').modal();
-    }
-
-    function version () {
-        jQuery('<pre>' + 'RT::Extension::Hotkeys version <% $RT::Extension::Hotkeys::VERSION %></pre>' ).modal();
-    }
-
-    function home(){
-        window.location = '<% $web_path %>/';
-    }
-
-    function notFound( string ) {
+    },
+    notFound: function( string ) {
         jQuery('<pre>' + string + ' is not found</pre>').modal();
-    }
-
-    function submit( e ) {
+    },
+    submit: function( e ) {
         var obj = jQuery(document).find(e).filter(':first');
         if ( obj.size() ) {
             obj.submit();
         }
         else {
-            notFound( e );
+            hotkeys.notFound( e );
         }
-    }
-
-    function click( e ) {
+    },
+    click: function( e ) {
         var obj = jQuery(document).find(e).filter(':first');
         if ( obj.size() ) {
             obj.click();
         }
         else {
-            notFound( e );
+            hotkeys.notFound( e );
         }
-    }
-
-    function openLink( e ) {
-        if ( e.match(/^\//) ) {
-            window.location = '<% $web_path %>' + e;
-        }
-        else {
-            window.location = e;
-        }
-    }
-
-    function open( e ) {
+    },
+    openLink: function( e ) {
+        window.location = e;
+    },
+    open: function( e ) {
         var obj = jQuery(document).find(e).filter(':first');
         if ( obj.size() ) {
-            window.location = jQuery(e).filter(':first').attr('href');
+            window.location = jQuery(e).attr('href');
         }
         else {
-            notFound( e );
+            hotkeys.notFound( e );
         }
-    }
+    },
+    ticket: function( number ) {
+        if ( !number ) {
+            number = prompt("<% loc('Goto Ticket') %>", "");
+        }
 
-    function ticket() {
-        var number = prompt("<% loc('Goto Ticket') %>", "");
         if (number){
-            window.location = '<% $web_path %>/Ticket/Display.html?id=' + number;
+            window.location = '<% RT->Config->Get('WebPath') %>/Ticket/Display.html?id=' + number;
         }
-    }
-
-    var hotkeys = <% RT::Extension::Hotkeys::Convert( $conf ) |n %>;
-
-    function bind( conf, restore ) {
+    },
+    bind: function( conf, global ) {
         jQuery(document).unbind('keydown.hotkeys');
-        jQuery(document).bind('keydown.hotkeys', 'esc', function() { bind(hotkeys) } );
+        jQuery(document).bind('keydown.hotkeys', 'esc', function() { hotkeys.bind(global || conf) } );
 
         for ( key in conf ) {
             if ( typeof( conf[key] ) == 'function' ) {
@@ -76,8 +54,8 @@
                     jQuery(document).bind('keydown.hotkeys', key,
                         function() {
                             conf[key]();
-                            if ( restore ) {
-                                bind(hotkeys);
+                            if ( global ) {
+                                hotkeys.bind(global);
                             }
                         }
                     );
@@ -85,20 +63,10 @@
             }
             else {
                 (function(key) {
-                    jQuery(document).bind('keydown.hotkeys', key, function() { bind( conf[key], 1 ) } );
+                    jQuery(document).bind('keydown.hotkeys', key, function() { hotkeys.bind( conf[key], global ) } );
                 })(key);
             }
         }
     }
+};
 
-    jQuery( function() {
-        bind( hotkeys );
-    });
-})(jQuery);
-
-<%INIT>
-my $web_path = RT->Config->Get('WebPath');
-my $conf = RT->Config->Get( 'Hotkeys', $session{CurrentUser} );
-my $help = RT::Extension::Hotkeys::Help( $conf );
-$help =~ s!'!\\'!g;
-</%INIT>

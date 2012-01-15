@@ -17,9 +17,9 @@ RT->AddJavaScript(
 
 RT->AddStyleSheets('hotkeys.css');
 
-sub Convert {
+sub ConfAsJS {
     my $conf = shift;
-    return {} unless $conf;
+    return {} unless $conf && keys %$conf;
 
     my $str  = '{';
     for my $key ( keys %$conf ) {
@@ -29,7 +29,7 @@ sub Convert {
                 $str .= "'$key': function() { $conf->{$key}{body} },\n";
             }
             else {
-                $str .= "'$key': " . Convert( $conf->{$key} ) . ",\n";
+                $str .= "'$key': " . ConfAsJS( $conf->{$key} ) . ",\n";
             }
         }
         else {
@@ -43,7 +43,7 @@ sub Convert {
 sub Help {
     my $conf = shift;
     my $level = shift || 0;
-    return '' unless $conf;
+    return '' unless $conf && keys %$conf;
 
     my $str;
 
@@ -97,33 +97,47 @@ customize %Hotkeys to meet your needs:
     Set(
         %Hotkeys,
         (
-            'v'       => { body => q!version()!, doc => 'version', },
-            'shift+/' => { body => q!help()!,    doc => 'help', },
-            'h'       => { body => q!openLink('/')!, doc => 'home', },
-            '/'       => {
-                body => q!openLink('/Search/Build.html')!,
-                doc  => 'search builder',
-            },
-            't' => { body => q!ticket()!, doc => 'goto ticket' },
-            'b' => {
+            'v'       => { body => q!hotkeys.version()!, doc => 'version', },
+            'shift+/' => { body => q!hotkeys.help()!,    doc => 'help', },
+            't'       => { body => q!hotkeys.ticket()!,  doc => 'goto ticket' },
+            'b'       => {
                 body =>
-                  q!click('a[href*="/Helpers/Toggle/TicketBookmark"]:first')!,
+                  q!hotkeys.click('a[href*="/Helpers/Toggle/TicketBookmark"]')!,
                 doc => 'toggle bookmark',
             },
             'c' => {
-                body => q!open('a[href*="Action=Comment"]:first')!,
+                body => q!hotkeys.open('a[href*="Action=Comment"]')!,
+                doc  => 'comment',
+            },
+            'shift+c' => {
+                body => q!hotkeys.open('a[href*="Action=Comment"]:last')!,
                 doc  => 'comment',
             },
             'r' => {
-                body => q!open('a[href*="Action=Respond"]:first')!,
+                body => q!hotkeys.open('a[href*="Action=Respond"]')!,
+                doc  => 'reply',
+            },
+            'shift+r' => {
+                body => q!hotkeys.open('a[href*="Action=Respond"]:last')!,
                 doc  => 'reply',
             },
             'g' => {
-                'a' => { body => q!openLink("/Admin")!, doc => 'admin', },
-                't' => { body => q!openLink("/Tools")!, doc => 'tools', },
+                'a' =>
+                  { body => q!hotkeys.openLink("/Admin")!, doc => 'admin', },
+                'c' => {
+                    body => q!hotkeys.openLink("/Prefs/Hotkeys.html")!,
+                    doc  => 'customize hotkeys',
+                },
+                'h' => { body => q!hotkeys.openLink("/")!, doc => 'home', },
+                's' => {
+                    body => q!hotkeys.openLink('/Search/Build.html')!,
+                    doc  => 'search builder',
+                },
+                't' =>
+                  { body => q!hotkeys.openLink("/Tools")!, doc => 'tools', },
             },
             'n' => {
-                body => q!submit('#CreateTicketInQueue')!,
+                body => q!hotkeys.submit('#CreateTicketInQueue')!,
                 doc  => 'create ticket in default queue',
             },
         )

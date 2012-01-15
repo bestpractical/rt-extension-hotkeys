@@ -1,0 +1,23 @@
+<script type="text/javascript">
+jQuery( function() {
+    hotkeys.help = function () {
+        var string = 'RT::Extension::Hotkeys version <% $RT::Extension::Hotkeys::VERSION %>\n\n' +
+            '<% $help |n%>';
+        hotkeys.show(string);
+    };
+    hotkeys.version = function () {
+        var string = 'RT::Extension::Hotkeys version <% $RT::Extension::Hotkeys::VERSION %>\n';
+        hotkeys.show(string);
+    };
+    hotkeys.bind( <% $js_conf |n%> );
+});
+</script>
+
+<%INIT>
+my $user = $session{CurrentUser}->UserObj;
+my $conf = $user->Preferences('Hotkeys') || RT->Config->Get('Hotkeys') || {};
+
+my $js_conf = RT::Extension::Hotkeys::ConfAsJS( $conf );
+my $help = RT::Extension::Hotkeys::Help( $conf );
+$help =~ s!'!\\'!;
+</%INIT>
