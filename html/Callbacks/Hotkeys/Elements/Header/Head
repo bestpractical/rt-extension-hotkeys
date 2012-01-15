@@ -14,8 +14,11 @@ jQuery( function() {
 </script>
 
 <%INIT>
+return
+  unless $session{CurrentUser}
+      && !RT->Config->Get( 'DisableHotkeys', $session{CurrentUser}->UserObj );
+
 my $user = $session{CurrentUser}->UserObj;
-return if RT->Config->Get('DisableHotkeys', $user);
 
 my $conf = $user->Preferences('Hotkeys') || RT->Config->Get('Hotkeys') || {};
 my $path = $r->path_info;
