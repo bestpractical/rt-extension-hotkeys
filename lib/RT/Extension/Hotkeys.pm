@@ -121,10 +121,9 @@ customize %Hotkeys to meet your needs:
         %Hotkeys,
         (
             global => {
-                'v' => { body => q!hotkeys.version()!, doc => 'version', },
-                'shift+/' => { body => q!hotkeys.help()!, doc => 'help', },
-                't' => { body => q!hotkeys.ticket()!, doc => 'goto ticket' },
-                'g' => {
+                'v'       => { body => q!hotkeys.version()!, doc => 'version', },
+                'shift+/' => { body => q!hotkeys.help()!,    doc => 'help', },
+                'g'       => {
                     'a' => {
                         body => q!hotkeys.openLink("/Approvals")!,
                         doc  => 'approvals',
@@ -139,10 +138,18 @@ customize %Hotkeys to meet your needs:
                             doc  => 'admin global',
                         },
                     },
+                    'd' => {
+                        body => q!hotkeys.openLink("/Dashboards/index.html")!,
+                        doc  => 'dashboards',
+                    },
                     'h' => { body => q!hotkeys.openLink("/")!, doc => 'home', },
                     'l' => {
                         body => q!hotkeys.openLink("/NoAuth/Logout.html")!,
                         doc  => 'logout',
+                    },
+                    'n' => {
+                        body => q!hotkeys.submit('#CreateTicketInQueue')!,
+                        doc  => 'create ticket in default queue',
                     },
                     'p' => {
                         'h' => {
@@ -154,11 +161,16 @@ customize %Hotkeys to meet your needs:
                             doc  => 'customize options',
                         },
                     },
+                    'r' => {
+                        body => q!location.reload()!,
+                        doc  => 'reload',
+                    },
                     's' => {
                         body => q!hotkeys.openLink('/Search/Build.html')!,
                         doc  => 'search builder',
                     },
-                    't' => {
+                    't' => { body => q!hotkeys.ticket()!, doc => 'goto ticket' },
+                    'u' => {
                         'd' => {
                             body => q!hotkeys.openLink("/Tools/MyDay.html")!,
                             doc  => 'my day',
@@ -171,39 +183,121 @@ customize %Hotkeys to meet your needs:
                             body => q!hotkeys.openLink("/Tools/MyReminders")!,
                             doc  => 'my reminders',
                         },
-                        't' => {
+                        'u' => {
                             body => q!hotkeys.openLink("/Tools")!,
                             doc  => 'tools',
                         },
                     },
                 },
-                'n' => {
-                    body => q!hotkeys.submit('#CreateTicketInQueue')!,
-                    doc  => 'create ticket in default queue',
-                },
-
             },
             '/Ticket/' => {
+                a => {
+                    'c' => {
+                        body =>
+                          q!hotkeys.open('#page-menu a[href*="Action=Comment"]')!,
+                        doc => 'comment',
+                    },
+                    'shift+c' => {
+                        body =>
+    q!hotkeys.open('#page-menu a[href*="Action=Comment"]:last')!,
+                        doc => 'comment based on the last message',
+                    },
+                    'e' => {
+                        body =>
+    q!hotkeys.open('#page-menu a[href*="/Articles/Article/ExtractIntoClass.html"]')!,
+                        doc => 'forward',
+                    },
+                    'f' => {
+                        body =>
+    q!hotkeys.open('#page-menu a[href*="/Ticket/Forward.html"]')!,
+                        doc => 'forward',
+                    },
+                    'shift+f' => {
+                        body =>
+                          q!hotkeys.open('a[href*="/Ticket/Forward.html"]:last')!,
+                        doc => 'forward the last message',
+                    },
+                    'j' => {
+                        body =>
+    q!hotkeys.open('#page-menu a[href*="DefaultStatus=rejected"]')!,
+                        doc => 'reject',
+                    },
+                    'l' => {
+                        body =>
+    q!hotkeys.open('#page-menu a[href*="DefaultStatus=resolved"]')!,
+                        doc => 'resolve',
+                    },
+                    'o' => {
+                        body =>
+    q!hotkeys.open('#page-menu a[href*="DefaultStatus=open"]')!,
+                        doc => 'open',
+                    },
+                    's' => {
+                        body =>
+    q!hotkeys.open('#page-menu a[href*="DefaultStatus=stalled"]')!,
+                        doc => 'stall',
+                    },
+                    'r' => {
+                        body =>
+                          q!hotkeys.open('#page-menu a[href*="Action=Respond"]')!,
+                        doc => 'reply',
+                    },
+                    'shift+r' => {
+                        body => q!hotkeys.open('a[href*="Action=Respond"]:last')!,
+                        doc  => 'reply based on the last message',
+                    },
+                    't' => {
+                        body =>
+                          q!hotkeys.open('#page-menu a[href*="Action=take"]')!,
+                        doc => 'open',
+                    },
+                },
                 'b' => {
                     body =>
-q!hotkeys.click('a[href*="/Helpers/Toggle/TicketBookmark"]')!,
+    q!hotkeys.click('#page-menu a[href*="/Helpers/Toggle/TicketBookmark"]')!,
                     doc => 'toggle bookmark',
                 },
-                'c' => {
-                    body => q!hotkeys.open('a[href*="Action=Comment"]')!,
-                    doc  => 'comment',
+                'd' => {
+                    body =>
+                      q!hotkeys.open('#page-menu a[href*="/Ticket/Display.html"]')!,
+                    doc => 'display',
                 },
-                'shift+c' => {
-                    body => q!hotkeys.open('a[href*="Action=Comment"]:last')!,
-                    doc  => 'comment',
+                'h' => {
+                    body =>
+                      q!hotkeys.open('#page-menu a[href*="/Ticket/History.html"]')!,
+                    doc => 'history',
+                },
+                'm' => {
+                    'a' => {
+                        body =>
+    q!hotkeys.open('#page-menu a[href*="/Ticket/ModifyAll.html"]')!,
+                        doc => 'modify all',
+                    },
+                    'b' => {
+                        body =>
+    q!hotkeys.open('#page-menu a[href*="/Ticket/Modify.html"]')!,
+                        doc => 'modify basics',
+                    },
+                    'd' => {
+                        body =>
+    q!hotkeys.open('#page-menu a[href*="/Ticket/ModifyDates.html"]')!,
+                        doc => 'modify dates',
+                    },
+                    'l' => {
+                        body =>
+    q!hotkeys.open('#page-menu a[href*="/Ticket/ModifyLinks.html"]')!,
+                        doc => 'modify links',
+                    },
+                    'p' => {
+                        body =>
+    q!hotkeys.open('#page-menu a[href*="/Ticket/ModifyPeople.html"]')!,
+                        doc => 'modify people',
+                    },
                 },
                 'r' => {
-                    body => q!hotkeys.open('a[href*="Action=Respond"]')!,
-                    doc  => 'reply',
-                },
-                'shift+r' => {
-                    body => q!hotkeys.open('a[href*="Action=Respond"]:last')!,
-                    doc  => 'reply',
+                    body =>
+    q!hotkeys.open('#page-menu a[href*="/Ticket/Reminders.html"]')!,
+                    doc => 'reminders',
                 },
             },
         )
