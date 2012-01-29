@@ -60,7 +60,7 @@ sub Help {
     my $str;
 
     if ( $level == 0 ) {
-        for my $item ( sort { $a eq 'global' ? -1 : $a <=> $b }keys %$conf ) {
+        for my $item ( sort { $a eq 'global' ? -1 : $a cmp $b }keys %$conf ) {
             $str .= "===== $item =====\\n\\n";
             $str .= Help( $conf->{$item}, $level + 1 );
             $str .= "\\n";
