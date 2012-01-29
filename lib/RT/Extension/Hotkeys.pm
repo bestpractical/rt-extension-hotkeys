@@ -300,6 +300,51 @@ customize %Hotkeys to meet your needs:
                     doc => 'reminders',
                 },
             },
+            '/Search/' => {
+                'a' => {
+                    body =>
+                      q!hotkeys.open('#page-menu a[href*="/Search/Edit.html"]')!,
+                    doc => 'advanced',
+                },
+                'c' => {
+                    body =>
+                      q!hotkeys.open('#page-menu a[href*="/Search/Chart.html"]')!,
+                    doc => 'chart',
+                },
+                'e' => {
+                    body =>
+                      q!hotkeys.open('#page-menu a[href*="/Search/Build.html"]')!,
+                    doc => 'edit',
+                },
+                'f' => {
+                    body => q!hotkeys.open('#page-menu a[href*="/NoAuth/rss"]')!,
+                    doc  => 'rss',
+                },
+                'i' => {
+                    body => q!hotkeys.open('#page-menu a[href*="/NoAuth/iCal"]')!,
+                    doc  => 'ical',
+                },
+                'r' => {
+                    body =>
+    q!hotkeys.open('#page-menu a[href*="/Admin/Tools/Shredder"]')!,
+                    doc => 'bulk',
+                },
+                'x' => {
+                    body =>
+                      q!hotkeys.open('#page-menu a[href*="/Search/Results.tsv"]')!,
+                    doc => 'excel',
+                },
+                's' => {
+                    body =>
+                      q!hotkeys.open('#page-menu a[href*="/Search/Results.html"]')!,
+                    doc => 'advanced',
+                },
+                'u' => {
+                    body =>
+                      q!hotkeys.open('#page-menu a[href*="/Search/Bulk.html"]')!,
+                    doc => 'bulk',
+                },
+            },
         )
     );
 
